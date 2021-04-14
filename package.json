@@ -1,0 +1,23 @@
+{
+  "name": "tailwind",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "tailwindcss build src/style.css -o dist/style.css",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlfandaviAU/Tubes3Stima.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlfandaviAU/Tubes3Stima/issues"
+  },
+  "homepage": "https://github.com/AlfandaviAU/Tubes3Stima#readme",
+  "dependencies": {
+    "tailwindcss": "^2.1.1"
+  }
+}
