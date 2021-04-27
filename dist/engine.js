@@ -143,10 +143,9 @@ function EngineTask1(inputString) {
 
   if (tugas && arrIDMatkul && singleDate) {
     console.log("[TASK BERHASIL DICATAT]");
-    console.log(`ID - ${singleDate.toLocaleDateString()} - ${arrIDMatkul[0]} - ${tugas} - ${getDescription(inputString, arrIDMatkul[1])}`);
+    console.log(`(ID: 1) - ${singleDate.toLocaleDateString()} - ${arrIDMatkul[0]} - ${tugas} - ${getDescription(inputString, arrIDMatkul[1])}`);
     
     let date = `${singleDate.getDate()}/${singleDate.getMonth()+1}/${singleDate.getFullYear()}`;
-    console.log(date);
     
     DB.insertToDB(date, arrIDMatkul[0], tugas, getDescription(inputString, arrIDMatkul[1]).trim());
   } else {
