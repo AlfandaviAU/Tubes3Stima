@@ -1,3 +1,5 @@
+const DB = require('./database.js');
+
 function buildPatternTable(pattern) {
   const patternTable = [0];
   let prefixIndex = 0;
@@ -71,12 +73,20 @@ function isChatValid() {
   return isValid;
 }
 
-function getAllDate(inputString, ptrRegexDate) {
+function getDate(inputString, ptrRegexDate) {
   let result = inputString.matchAll(ptrRegexDate);
   result = Array.from(result);
 
-  if (result.length > 0) {  
-    console.log(result);
+  if (result.length > 0) {
+    if (result.length > 1) {
+      let arr = result;
+      let arrDate = [];
+      arr.forEach((item) => {
+        arrDate.push(new Date(item[0]));
+      });
+
+      return arrDate;
+    } 
     let date = new Date(result[0][0]);
     return date;
   }
@@ -84,14 +94,48 @@ function getAllDate(inputString, ptrRegexDate) {
   return false;
 }
 
-let testString = 'Hallo bisa bantu tugasku ga 01/09/2021 sampai 2023-05-01 sampai 05/12/24';
-let testString2 = "test doang ini";
+function getAllDate(inputString) {
+  let ptrDate1 = /[0-9]{2}([\-/ \.])[0-9]{2}[\-/ \.]([0-9]{4}|[0-9]{2}\s)/g; // dd/mm/yyyy
+  let ptrDate2 = /[0-9]{4}([\B\-/ \.])[0-9]{2}[\-/ \.][0-9]{2}/g; // yyyy/mm/dd
+  let ptrDate3 = /[0-9]{2}\s((J|j)anuari|(F|f)ebruari|(M|m)aret|(A|a)pril|(M|m)ei|(J|j)uni|(J|j)uli|(A|a)gustus|(S|s)eptember|(O|o)tokber|(N|n)ovember|(D|d)esember)\s[0-9]{4}/g; // dd mm yyyy
 
-let ptrDate1 = /[0-9]{2}([\-/ \.])[0-9]{2}[\-/ \.][0-9]{4}/g; // dd/mm/yyyy
-let ptrDate2 = /[0-9]{4}([\-/ \.])[0-9]{2}[\-/ \.][0-9]{2}/g; // mm/dd/yyyy
+  let arrPattern = [];
+  arrPattern.push(ptrDate1);
+  arrPattern.push(ptrDate2);
+  arrPattern.push(ptrDate3);
 
-let item = getAllDate(testString, ptrDate1);
-console.log(item.getFullYear());
+  let result = [];
 
-// let result = knuthMorrisPratt('abcxabcdabxaabaabaaaabcdabcdabcy', 'ababababca');
-// console.log(result);
+  arrPattern.forEach((item) => {
+    result.push(getDate(inputString, item));
+  });
+
+  return result;
+}
+
+function getIDMatkul(inputString) {
+  let matkulPtr = /IF\d{4}/g;
+  let result = inputString.matchAll(matkulPtr);
+  result = Array.from(result);
+
+  if (result.length > 0) {
+    let arr = result;
+    let arrIDMatkul = [];
+    arr.forEach((item) => {
+      arrIDMatkul.push(item[0]);
+    });
+
+    console.log(arrIDMatkul);
+    return arrIDMatkul;
+    
+  }
+
+  return false;
+}
+
+let testString = 'Hallo bisa bantu IF2210 tugasku ga 01/09/2021 IF2300 sampai 05/12/24 12 maret 2020 sampai 2020/12/06';
+
+// console.log(getAllDate(testString));
+getIDMatkul(testString);
+
+DB.createTable();
