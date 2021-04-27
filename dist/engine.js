@@ -1,8 +1,8 @@
 let mysql = require('mysql');
 const DB = require('./database.js');
 
-//DB.createDatabase();
-//DB.createTable();
+// DB.createDatabase();
+// DB.createTable();
 
 function buildPatternTable(pattern) {
   const patternTable = [0];
@@ -122,7 +122,11 @@ function getDescription(inputString, indexMatkul) {
 }
 
 function getIDTask(inputString) {
+  let matkulPtr = /ID_\d{4}IF\d{4}/g;
+  let result = inputString.matchAll(matkulPtr);
+  result = Array.from(result);
 
+  return result;
 }
 
 function EngineTask1(inputString) {
@@ -172,21 +176,27 @@ function EngineTask1(inputString) {
   }
 }
 
+function formatDate(date) {
+  let nDate = new Date(date);
+  return `${nDate.getDate()}/${nDate.getMonth()+1}/${nDate.getFullYear()}`;
+}
+
 function EngineTask4(inputString) {
-  let date = getAllDate(inputString);
+  let arrDate = getAllDate(inputString);
   let description = 'String Matching';
-  var result = true;
+  let id_task = getIDTask(inputString);
+  let date = formatDate(arrDate[0]);
 
   DB.con.connect((err) => {  
     if (err) throw err;
-    let sql = `SELECT * FROM jadwal WHERE deskripsi='${description}'`;
+    let sql = `SELECT * FROM jadwal WHERE id_tugas='${id_task[0][0]}'`;
 
     DB.con.query(sql, (err, res) => {
       if (!err) {
         console.log(res.length);
 
         if (res.length != 0) {
-            let sql = `UPDATE jadwal SET tanggal = ${date} WHERE deskripsi = '${description}'`;
+            let sql = `UPDATE jadwal SET tanggal = '${date}' WHERE id_tugas = '${id_task[0][0]}'`;
             DB.con.query(sql, function (err, result) {
               if (err) throw err;
               console.log(result.affectedRows + " record(s) updated");
@@ -198,12 +208,10 @@ function EngineTask4(inputString) {
       }
     });
   });
-
-  console.log(result);
 }
 
 let testString = 'Hallo bot tolong ingatkan Kuis IF2210 String Matching pada 2 December 2021';
-let testString2 = 'Deadline task X diundur menjadi 24 Januari 2019';
+let testString2 = 'Deadline task ID_1202IF2210 diundur menjadi 05 Maret 2015';
 
 // getAllDate(testString2);
 // EngineTask1(testString);
@@ -257,7 +265,7 @@ function EngineTask6(text){
   
 }
 
-EngineTask6("asu selesai ancok");
+// EngineTask6("asu ancok ancok");
 
 function help(){
   console.log('Fitur VCS Bot :\n- 1. Menambahkan task baru\n- 2. Melihat daftar task yang harus dikerjakan\n- 3. Menampilkan deadline dari suatu task tertentu\n- 4. Memperbaharui task tertentu\n- 5. Menandai bahwa suatu task sudah selesai dikerjakan\n\nDaftar kata penting yang harus anda muat salah satu didalam chat anda ialah : Kuis, Ujian, Tucil, Tubes, Praktikum\n\n- Periode date 1 sampai date 2, usage : Apa saja deadline antara date1 sampai date2 ?\n- N Minggu kedepan, usage : Deadline N minggu kedepan apa saja ?\n- N Hari kedepan, usage : Deadline N hari kedepan apa saja ?\n- Hari ini, usage : Apa saja deadline hari ini ?\n- Menampilkan deadline tertentu : Deadline tugas tugas123 itu kapan ?\n- Ingin menyesuaikan deadline task, usage : Deadline tugas tugas123 diundur/dimajukan menjadi date123\n- Menyelesaikan tugas, usage : Saya sudah selesai mengerjakan task task123 ( ID Task tersebut )')
@@ -306,45 +314,45 @@ function help(){
 
 
 
-// function getDate(inputString, ptrRegexDate) {
-//   let result = inputString.matchAll(ptrRegexDate);
-//   let ptrDate = /([0-9]{2}|[0-9]{1})\s((J|j)anuari|(F|f)ebruari|(M|m)aret|(A|a)pril|(M|m)ei|(J|j)uni|(J|j)uli|(A|a)gustus|(S|s)eptember|(O|o)tokber|(N|n)ovember|(D|d)esember)\s[0-9]{4}/g; // dd mm yyyy
+// // function getDate(inputString, ptrRegexDate) {
+// //   let result = inputString.matchAll(ptrRegexDate);
+// //   let ptrDate = /([0-9]{2}|[0-9]{1})\s((J|j)anuari|(F|f)ebruari|(M|m)aret|(A|a)pril|(M|m)ei|(J|j)uni|(J|j)uli|(A|a)gustus|(S|s)eptember|(O|o)tokber|(N|n)ovember|(D|d)esember)\s[0-9]{4}/g; // dd mm yyyy
 
-//   result = Array.from(result);
+// //   result = Array.from(result);
 
-//   if (result.length > 0) {
-//     if (result.length > 1) {
-//       let arr = result;
-//       let arrDate = [];
-//       arr.forEach((item) => {
-//         arrDate.push(new Date(item[0]));
-//       });
-//       return arrDate;
-//     } 
+// //   if (result.length > 0) {
+// //     if (result.length > 1) {
+// //       let arr = result;
+// //       let arrDate = [];
+// //       arr.forEach((item) => {
+// //         arrDate.push(new Date(item[0]));
+// //       });
+// //       return arrDate;
+// //     } 
 
-//     return result[0][0];    
-//   }
+// //     return result[0][0];    
+// //   }
 
-//   return false;
-// }
+// //   return false;
+// // }
 
-// function getAllDate(inputString) {
-//   let ptrDate1 = /[0-9]{2}([\-/ \.])[0-9]{2}[\-/ \.]([0-9]{4}|[0-9]{2}\s)/g; // dd/mm/yyyy
-//   let ptrDate2 = /[0-9]{4}([\B\-/ \.])[0-9]{2}[\-/ \.][0-9]{2}/g; // yyyy/mm/dd
-//   let ptrDate3 = /([0-9]{2}|[0-9]{1})\s((J|j)anuari|(F|f)ebruari|(M|m)aret|(A|a)pril|(M|m)ei|(J|j)uni|(J|j)uli|(A|a)gustus|(S|s)eptember|(O|o)tokber|(N|n)ovember|(D|d)ecember)\s[0-9]{4}/g; // dd mm yyyy
+// // function getAllDate(inputString) {
+// //   let ptrDate1 = /[0-9]{2}([\-/ \.])[0-9]{2}[\-/ \.]([0-9]{4}|[0-9]{2}\s)/g; // dd/mm/yyyy
+// //   let ptrDate2 = /[0-9]{4}([\B\-/ \.])[0-9]{2}[\-/ \.][0-9]{2}/g; // yyyy/mm/dd
+// //   let ptrDate3 = /([0-9]{2}|[0-9]{1})\s((J|j)anuari|(F|f)ebruari|(M|m)aret|(A|a)pril|(M|m)ei|(J|j)uni|(J|j)uli|(A|a)gustus|(S|s)eptember|(O|o)tokber|(N|n)ovember|(D|d)ecember)\s[0-9]{4}/g; // dd mm yyyy
 
-//   let arrPattern = [];
-//   arrPattern.push(ptrDate1);
-//   arrPattern.push(ptrDate2);
-//   arrPattern.push(ptrDate3);
+// //   let arrPattern = [];
+// //   arrPattern.push(ptrDate1);
+// //   arrPattern.push(ptrDate2);
+// //   arrPattern.push(ptrDate3);
 
-//   let result = [];
+// //   let result = [];
 
-//   arrPattern.forEach((item) => {
-//     result.push(getDate(inputString, item));
-//   });
+// //   arrPattern.forEach((item) => {
+// //     result.push(getDate(inputString, item));
+// //   });
 
-//   console.log(result);
+// //   console.log(result);
 
-//   return result;
-// }
+// //   return result;
+// // }
