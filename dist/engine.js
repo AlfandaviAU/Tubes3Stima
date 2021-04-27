@@ -196,18 +196,23 @@ function help(){
 help();
 
 
-function handleDate(date,asu,num){
-  if (asu == "minggu")
-  console.log(date.getFullYear());
-  console.log(date.getMonth()+1);
-  console.log(date.getDate());
+
+function EngineTask6(text){
+  let kataKunci = ['selesai', 'sudah', 'tuntas', 'telah', 'beres','kelar','rampung','mari'];
+  
+  var i;
+  var asuLagi = false;
+  for (i = 0; i < kataKunci.length; i++){
+    let asu = knuthMorrisPratt(text,kataKunci[i]);
+    if (asu != -1){
+      asuLagi =true;
+      break;
+    }
+  }
+  console.log("KNUT ASU : "+asuLagi);
 }
 
-handleDate(newDate);
-
-
-
-
+EngineTask6("asu ancok ancok");
 
 
 
