@@ -1,7 +1,7 @@
 const DB = require('./database.js');
 
 //DB.createDatabase();
-DB.createTable();
+//DB.createTable();
 
 function buildPatternTable(pattern) {
   const patternTable = [0];
@@ -140,14 +140,27 @@ function EngineTask1(inputString) {
   } else {
     singleDate = false;
   }
-
+  if (singleDate.getMonth()+1 < 10){
+    if (singleDate.getDate() < 10){
+      id_tugas = "ID_0"+(singleDate.getMonth()+1) + "0"+ singleDate.getDate()+ arrIDMatkul[0];
+    }else{
+      id_tugas = "ID_0"+(singleDate.getMonth()+1) + singleDate.getDate()+ arrIDMatkul[0];
+    }
+  }else{
+    if (singleDate.getDate() < 10){
+      id_tugas = "ID_"+(singleDate.getMonth()+1) + "0"+ singleDate.getDate()+ arrIDMatkul[0];
+    }else{
+      id_tugas = "ID_"+(singleDate.getMonth()+1) + singleDate.getDate()+ arrIDMatkul[0];
+    }
+  }
+  status = "F";
   if (tugas && arrIDMatkul && singleDate) {
     console.log("[TASK BERHASIL DICATAT]");
     console.log(`(ID: 1) - ${singleDate.toLocaleDateString()} - ${arrIDMatkul[0]} - ${tugas} - ${getDescription(inputString, arrIDMatkul[1])}`);
     
     let date = `${singleDate.getDate()}/${singleDate.getMonth()+1}/${singleDate.getFullYear()}`;
     
-    DB.insertToDB(date, arrIDMatkul[0], tugas, getDescription(inputString, arrIDMatkul[1]).trim());
+    DB.insertToDB(id_tugas,date, arrIDMatkul[0], tugas, getDescription(inputString, arrIDMatkul[1]).trim(),status);
   } else {
     console.log("Non Valid");
   }
@@ -162,10 +175,10 @@ function EngineTask2(inputString) {
   console.log(res);
 }
 
-let testString = 'Hallo bot tolong ingatkan Kuis IF2210 String Matching pada 12 Juli 2021';
+let testString = 'Hallo bot tolong ingatkan Kuis IF2210 String Matching pada 2 December 2021';
 
 // getAllDate(testString2);
-//EngineTask1(testString);
+EngineTask1(testString);
 // EngineTask2(testString);
 
 var newDate = new Date("12 Januari 2025");
