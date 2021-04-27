@@ -25,7 +25,7 @@ function buildPatternTable(pattern) {
   return patternTable;
 }
 
-function knuthMorrisPratt(text, word) {
+function KMP(text, word) {
   if (word.length === 0) {
     return 0;
   }
@@ -55,9 +55,10 @@ function knuthMorrisPratt(text, word) {
 
 function getDate(inputString, ptrRegexDate) {
   let result = inputString.matchAll(ptrRegexDate);
-  let ptrDate = /([0-9]{2}|[0-9]{1})\s((J|j)anuari|(F|f)ebruari|(M|m)aret|(A|a)pril|(M|m)ei|(J|j)uni|(J|j)uli|(A|a)gustus|(S|s)eptember|(O|o)tokber|(N|n)ovember|(D|d)esember)\s[0-9]{4}/g; // dd mm yyyy
 
   result = Array.from(result);
+
+  console.log(result);
 
   if (result.length > 0) {
     if (result.length > 1) {
@@ -76,7 +77,7 @@ function getDate(inputString, ptrRegexDate) {
 }
 
 function getAllDate(inputString) {
-  let ptrDate = /([0-9]{2}|[0-9]{1})\s((J|j)anuari|(F|f)ebruari|(M|m)aret|(A|a)pril|(M|m)ei|(J|j)uni|(J|j)uli|(A|a)gustus|(S|s)eptember|(O|o)ktober|(N|n)ovember|(D|d)ecember)\s[0-9]{4}/g; // dd mm yyyy
+  let ptrDate = /([0-9]{2}|[0-9]{1})\s((J|j)anuari|(F|f)ebruari|(M|m)aret|(A|a)pril|(M|m)ay|(J|j)uni|(J|j)uli|(A|a)gustus|(S|s)eptember|(O|o)ktober|(N|n)ovember|(D|d)ecember)\s[0-9]{4}/g; // dd mm yyyy
 
   let arrPattern = [];
   arrPattern.push(ptrDate);
@@ -109,7 +110,7 @@ function getIDMatkul(inputString) {
 }
 
 function getDescription(inputString, indexMatkul) {
-  let indexPada = knuthMorrisPratt(inputString, "pada");
+  let indexPada = KMP(inputString, "pada");
   let description;
 
   if (indexPada != -1) {
@@ -138,7 +139,7 @@ function EngineTask1(inputString) {
   let status = "F";
 
   kataKunci.forEach((item) => {
-    if (knuthMorrisPratt(inputString, item) != -1) {
+    if (KMP(inputString, item) != -1) {
       tugas = item;
     }
   });
@@ -209,14 +210,14 @@ function EngineTask4(inputString) {
   });
 }
 
-let testString = 'Hallo bot tolong ingatkan Kuis IF2210 String Matching pada 2 April 2022';
+let testString = 'Hallo bot tolong ingatkan Kuis IF2210 Bab 2 Sampai 3 pada 14 May 2022';
 let testString2 = 'Deadline task ID_1202IF2210 diundur menjadi 05 Maret 2020';
 let testString3 = 'Kapan deadline tugas IF2210 ?';
 
 // getAllDate(testString2);
-// EngineTask1(testString);
+EngineTask1(testString);
 // EngineTask4(testString2);
-EngineTask3(testString3);
+// EngineTask3(testString3);
 
 function EngineTask3(inputString) {
   let kataKunci = ['Kapan', 'Bila', 'Waktu', 'Ketika'];
@@ -224,7 +225,7 @@ function EngineTask3(inputString) {
   let kunci = " ";
 
   kataKunci.forEach((item) => {
-    if (knuthMorrisPratt(inputString, item) != -1) {
+    if (KMP(inputString, item) != -1) {
       kunci = item;
     }
   });
@@ -266,7 +267,7 @@ function EngineTask5(text){
     console.log("Masukan invalid, silahkan masukkan 1 id_tugas saja");
   }else{
     for (i = 0; i < kataKunci.length; i++){
-      let asu = knuthMorrisPratt(text,kataKunci[i]);
+      let asu = KMP(text,kataKunci[i]);
       if (asu != -1){
         asuLagi =true;
         break;
