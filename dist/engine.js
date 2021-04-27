@@ -139,7 +139,7 @@ function EngineTask1(inputString) {
 }
 
 let testString = 'Hallo bisa bantu IF2210 tugasku ga 01/09/2021 IF2300 sampai 05/12/24 12 maret 2020 sampai 2020/12/06';
-let testString2 = 'Tubes IF2211 String Matching pada 2020/12/06';
+let testString2 = 'Hallo tolong ingatkan Kuis IF2211 String Matching pada 2020/12/06';
 
 // console.log(getAllDate(testString));
 EngineTask1(testString2);
