@@ -28,7 +28,7 @@ const createTable = () => {
   con.connect(function(err) {
     if (err) throw err;
     console.log("Connected!");
-    var sql = "CREATE TABLE jadwal (id INT AUTO_INCREMENT PRIMARY KEY, tanggal VARCHAR(255), kode VARCHAR(255), nama_tugas VARCHAR(255), deskripsi VARCHAR(255))";
+    var sql = "CREATE TABLE jadwal (id INT AUTO_INCREMENT PRIMARY KEY, id_tugas VARCHAR(255), tanggal VARCHAR(255), kode VARCHAR(255), nama_tugas VARCHAR(255), deskripsi VARCHAR(255)), status VARCHAR(1)";
     con.query(sql, function (err, result) {
       if (err) throw err;
       console.log("Table created");
@@ -36,11 +36,11 @@ const createTable = () => {
   });
 }
 
-const insertToDB = (tgl, kode, nama, deskripsi) => {
+const insertToDB = (id_tugas,tgl, kode, nama, deskripsi,status) => {
   con.connect((err) => {
     if (err) throw err;
 
-    let sql = `INSERT INTO jadwal (tanggal, kode, nama_tugas, deskripsi) VALUES ('${tgl}', '${kode}', '${nama}', '${deskripsi}')`;
+    let sql = `INSERT INTO jadwal (id_tugas, tanggal, kode, nama_tugas, deskripsi, status) VALUES ('${id_tugas}','${tgl}', '${kode}', '${nama}', '${deskripsi}','${status}')`;
     con.query(sql, function (err, result) {
       if (err) throw err;
       console.log("1 record inserted");
