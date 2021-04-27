@@ -153,12 +153,20 @@ function EngineTask1(inputString) {
   }
 }
 
-let testString = 'Hallo bisa bantu IF2210 tugasku ga 01/09/2021 IF2300 sampai 05/12/24 12 maret 2020 sampai 2020/12/06';
-let testString2 = 'Hallo bot tolong ingatkan Kuis IF2210 String Matching pada 12 Juli 2021';
-let testString3 = "12 Juni 2025 29 April 2030";
+function EngineTask2(inputString) {
+  let date = getAllDate(inputString);
+  let description = getDescription(inputString);
+
+  console.log(description);
+  let res = DB.selectDesc("String Matching");
+  console.log(res);
+}
+
+let testString = 'Hallo bot tolong ingatkan Kuis IF2210 String Matching pada 12 Juli 2021';
 
 // getAllDate(testString2);
-EngineTask1(testString2);
+EngineTask1(testString);
+// EngineTask2(testString);
 
 // var newDate = new Date("12 Juni 2025");
 // console.log(newDate);
