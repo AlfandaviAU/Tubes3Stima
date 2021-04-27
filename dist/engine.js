@@ -210,18 +210,12 @@ function EngineTask4(inputString) {
 }
 
 let testString = 'Hallo bot tolong ingatkan Kuis IF2210 String Matching pada 2 December 2021';
-let testString2 = 'Deadline task ID_1202IF2210 diundur menjadi 05 Maret 2015';
+let testString2 = 'Deadline task ID_1202IF2210 diundur menjadi 05 Maret 2020';
 
 // getAllDate(testString2);
 // EngineTask1(testString);
-//EngineTask4(testString2);
+EngineTask4(testString2);
 
-var newDate = new Date("12 Januari 2025");
-//console.log(newDate);
-//console.log(newDate.toLocaleString());
-//console.log(newDate.getFullYear());
-//console.log(newDate.getMonth()+1);
-//console.log(newDate.getDate());
 
 function EngineTask5(text){
   let kataKunci = ['selesai', 'sudah', 'tuntas', 'telah', 'beres','kelar','rampung','mari'];
@@ -267,29 +261,13 @@ function EngineTask5(text){
 
 }
 
-EngineTask5("asu ancok ancok selesai ID_0712IF2210 ID_1212IF2210");
+// EngineTask5("asu ancok ancok selesai ID_0712IF2210 ID_1212IF2210");
 
 function help(){
   console.log('Fitur VCS Bot :\n- 1. Menambahkan task baru\n- 2. Melihat daftar task yang harus dikerjakan\n- 3. Menampilkan deadline dari suatu task tertentu\n- 4. Memperbaharui task tertentu\n- 5. Menandai bahwa suatu task sudah selesai dikerjakan\n\nDaftar kata penting yang harus anda muat salah satu didalam chat anda ialah : Kuis, Ujian, Tucil, Tubes, Praktikum\n\n- Periode date 1 sampai date 2, usage : Apa saja deadline antara date1 sampai date2 ?\n- N Minggu kedepan, usage : Deadline N minggu kedepan apa saja ?\n- N Hari kedepan, usage : Deadline N hari kedepan apa saja ?\n- Hari ini, usage : Apa saja deadline hari ini ?\n- Menampilkan deadline tertentu : Deadline tugas tugas123 itu kapan ?\n- Ingin menyesuaikan deadline task, usage : Deadline tugas tugas123 diundur/dimajukan menjadi date123\n- Menyelesaikan tugas, usage : Saya sudah selesai mengerjakan task task123 ( ID Task tersebut )')
 }
 
 //help();
-
-
-// function handleDate(date,asu,num){
-//   if (asu == "minggu")
-//   console.log(date.getFullYear());
-//   console.log(date.getMonth()+1);
-//   console.log(date.getDate());
-// }
-
-// handleDate(newDate);
-
-
-
-
-
-
 
 
 
