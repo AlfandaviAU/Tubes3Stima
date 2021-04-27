@@ -49,30 +49,6 @@ function knuthMorrisPratt(text, word) {
   return -1;
 }
 
-function isChatValid() {
-  let kataKunci = ['Kuis', 'Ujian', 'Tucil', 'Tubes', 'Praktikum'];
-  let countKataKunci = 0;
-  let isValid = false;
-
-  kataKunci.forEach((item) => {
-    let result = knuthMorrisPratt(testString, item);
-
-    if (result != -1) {
-      countKataKunci += 1;
-    }
-  });
-
-  if (countKataKunci > 1) {
-    isValid = false;
-  } else if (countKataKunci == 1) {
-    isValid = true;
-  } else {
-    isValid = false;
-  }
-
-  return isValid;
-}
-
 function getDate(inputString, ptrRegexDate) {
   let result = inputString.matchAll(ptrRegexDate);
   result = Array.from(result);
@@ -125,17 +101,45 @@ function getIDMatkul(inputString) {
       arrIDMatkul.push(item[0]);
     });
 
-    console.log(arrIDMatkul);
     return arrIDMatkul;
-    
   }
 
   return false;
 }
 
+function EngineTask1(inputString) {
+  let kataKunci = ['Kuis', 'Ujian', 'Tucil', 'Tubes', 'Praktikum'];
+  let arrIDMatkul = getIDMatkul(inputString);
+  let arrDate = getAllDate(inputString);
+  let tugas = false;
+  let singleDate;
+
+  kataKunci.forEach((item) => {
+    if (knuthMorrisPratt(inputString, item) != -1) {
+      tugas = item;
+    }
+  });
+
+  for (let item of arrDate) {
+    if (item) {
+      arrDate = item;
+      singleDate = new Date(item);
+      break;
+    } else {
+      arrDate = false;
+    }
+  }
+
+  if (tugas && arrIDMatkul && arrDate) {
+    console.log("[TASK BERHASIL DICATAT]");
+    console.log(`ID - ${singleDate.toLocaleDateString()} - ${arrIDMatkul} - ${tugas}`);
+  } else {
+    console.log("Non Valid");
+  }
+}
+
 let testString = 'Hallo bisa bantu IF2210 tugasku ga 01/09/2021 IF2300 sampai 05/12/24 12 maret 2020 sampai 2020/12/06';
+let testString2 = 'Tubes IF2211 String Matching pada 2020/12/06';
 
 // console.log(getAllDate(testString));
-getIDMatkul(testString);
-
-DB.createTable();
+EngineTask1(testString2);
