@@ -3,17 +3,15 @@ let mysql = require('mysql');
 let con = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "123456",
-  database: "stima",
-  port: "3307"
+  password: "root",
+  database: "stima"
 });
 
 const createDatabase = () => {
   let con = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "123456",
-    port: "3307"
+    password: "root"
   });
   
   con.connect(function(err) {
