@@ -209,12 +209,51 @@ function EngineTask4(inputString) {
   });
 }
 
-let testString = 'Hallo bot tolong ingatkan Kuis IF2210 String Matching pada 2 December 2021';
+let testString = 'Hallo bot tolong ingatkan Kuis IF2210 String Matching pada 2 April 2022';
 let testString2 = 'Deadline task ID_1202IF2210 diundur menjadi 05 Maret 2020';
+let testString3 = 'Kapan deadline tugas IF2210 ?';
 
 // getAllDate(testString2);
 // EngineTask1(testString);
-EngineTask4(testString2);
+// EngineTask4(testString2);
+EngineTask3(testString3);
+
+function EngineTask3(inputString) {
+  let kataKunci = ['Kapan', 'Bila', 'Waktu', 'Ketika'];
+  let kodeMatkul = getIDMatkul(inputString);
+  let kunci = " ";
+
+  kataKunci.forEach((item) => {
+    if (knuthMorrisPratt(inputString, item) != -1) {
+      kunci = item;
+    }
+  });
+
+  if (kodeMatkul[0].length != 1) {
+    console.log("Tidak valid pertama");
+  } else {
+    if (kunci != " ") {
+      DB.con.connect((err) => {  
+        if (err) throw err;
+        let sql = `SELECT tanggal FROM jadwal WHERE kode='${kodeMatkul[0][0]}'`;
+    
+        DB.con.query(sql, (err, res) => {
+          if (!err) {    
+            if (res.length != 0) {
+              let x = JSON.parse(JSON.stringify(res));
+              console.log(x[0].tanggal);
+              console.log(x[1].tanggal);
+            } else {
+              console.log("Task tidak ditemukan");
+            }
+          }
+        });
+      });
+    } else {
+      console.log("Tidak valid");
+    }
+  }
+}
 
 
 function EngineTask5(text){
