@@ -121,6 +121,10 @@ function getDescription(inputString, indexMatkul) {
   return description;
 }
 
+function getIDTask(inputString) {
+
+}
+
 function EngineTask1(inputString) {
   let kataKunci = ['Kuis', 'Ujian', 'Tucil', 'Tubes', 'Praktikum'];
   let arrIDMatkul = getIDMatkul(inputString);
@@ -182,8 +186,7 @@ function EngineTask4(inputString) {
         console.log(res.length);
 
         if (res.length != 0) {
-          
-            var sql = `UPDATE jadwal SET tanggal = '69/69/2068' WHERE deskripsi = '${description}'`;
+            let sql = `UPDATE jadwal SET tanggal = ${date} WHERE deskripsi = '${description}'`;
             DB.con.query(sql, function (err, result) {
               if (err) throw err;
               console.log(result.affectedRows + " record(s) updated");
@@ -199,29 +202,12 @@ function EngineTask4(inputString) {
   console.log(result);
 }
 
-function isDataExist (deskripsi) {
-  let result = false;
-
-  DB.con.connect((err) => {  
-    if (err) throw err;
-    let sql = `SELECT * FROM jadwal WHERE deskripsi='${deskripsi}'`;
-
-    DB.con.query(sql, (err, res) => {
-      if (!err) {
-        console.log(res);
-        result = true;
-      }
-    });
-  });
-
-  return result;
-}
-
 let testString = 'Hallo bot tolong ingatkan Kuis IF2210 String Matching pada 2 December 2021';
+let testString2 = 'Deadline task X diundur menjadi 24 Januari 2019';
 
 // getAllDate(testString2);
 // EngineTask1(testString);
-EngineTask4(testString);
+EngineTask4(testString2);
 
 var newDate = new Date("12 Januari 2025");
 //console.log(newDate);
@@ -230,6 +216,22 @@ var newDate = new Date("12 Januari 2025");
 //console.log(newDate.getMonth()+1);
 //console.log(newDate.getDate());
 
+function EngineTask6(text){
+  let kataKunci = ['selesai', 'sudah', 'tuntas', 'telah', 'beres','kelar','rampung','mari'];
+  
+  var i;
+  var asuLagi = false;
+  for (i = 0; i < kataKunci.length; i++){
+    let asu = knuthMorrisPratt(text,kataKunci[i]);
+    if (asu != -1){
+      asuLagi =true;
+      break;
+    }
+  }
+  console.log("KNUT ASU : "+asuLagi);
+}
+
+EngineTask6("asu ancok ancok");
 
 function help(){
   console.log('Fitur VCS Bot :\n- 1. Menambahkan task baru\n- 2. Melihat daftar task yang harus dikerjakan\n- 3. Menampilkan deadline dari suatu task tertentu\n- 4. Memperbaharui task tertentu\n- 5. Menandai bahwa suatu task sudah selesai dikerjakan\n\nDaftar kata penting yang harus anda muat salah satu didalam chat anda ialah : Kuis, Ujian, Tucil, Tubes, Praktikum\n\n- Periode date 1 sampai date 2, usage : Apa saja deadline antara date1 sampai date2 ?\n- N Minggu kedepan, usage : Deadline N minggu kedepan apa saja ?\n- N Hari kedepan, usage : Deadline N hari kedepan apa saja ?\n- Hari ini, usage : Apa saja deadline hari ini ?\n- Menampilkan deadline tertentu : Deadline tugas tugas123 itu kapan ?\n- Ingin menyesuaikan deadline task, usage : Deadline tugas tugas123 diundur/dimajukan menjadi date123\n- Menyelesaikan tugas, usage : Saya sudah selesai mengerjakan task task123 ( ID Task tersebut )')
