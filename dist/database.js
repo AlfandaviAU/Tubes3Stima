@@ -48,29 +48,9 @@ const insertToDB = (tgl, kode, nama, deskripsi) => {
   });
 }
 
-const selectDesc = (deskripsi) => {
-  let result = false;
-
-  con.connect((err) => {  
-    if (err) throw err;
-    let sql = `SELECT * FROM jadwal WHERE deskripsi='${deskripsi}'`;
-
-    con.query(sql, (err, res) => {
-      if (!err) {
-        console.log(res);
-        return () => {
-          this.result = true;
-        }
-      }
-    });
-  });
-
-  return result;
-}
-
 module.exports = {
   createDatabase: createDatabase,
   createTable: createTable,
   insertToDB: insertToDB,
-  selectDesc: selectDesc
+  con: con
 }

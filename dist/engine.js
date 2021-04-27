@@ -1,3 +1,4 @@
+let mysql = require('mysql');
 const DB = require('./database.js');
 
 // DB.createDatabase();
@@ -86,8 +87,6 @@ function getAllDate(inputString) {
     result.push(getDate(inputString, item));
   });
 
-  console.log(result);
-
   return result;
 }
 
@@ -155,18 +154,46 @@ function EngineTask1(inputString) {
 
 function EngineTask2(inputString) {
   let date = getAllDate(inputString);
-  let description = getDescription(inputString);
+  let description = 'String Matchings';
 
-  console.log(description);
-  let res = DB.selectDesc("String Matching");
-  console.log(res);
+  DB.con.connect((err) => {  
+    if (err) throw err;
+    let sql = `SELECT * FROM jadwal WHERE deskripsi='${description}'`;
+
+    DB.con.query(sql, (err, res) => {
+      if (!err) {
+        console.log(res);
+        result = true;
+      } else {
+        console.log("Task tidak ditemukan");
+      }
+    });
+  });
+}
+
+function isDataExist (deskripsi) {
+  let result = false;
+
+  DB.con.connect((err) => {  
+    if (err) throw err;
+    let sql = `SELECT * FROM jadwal WHERE deskripsi='${deskripsi}'`;
+
+    DB.con.query(sql, (err, res) => {
+      if (!err) {
+        console.log(res);
+        result = true;
+      }
+    });
+  });
+
+  return result;
 }
 
 let testString = 'Hallo bot tolong ingatkan Kuis IF2210 String Matching pada 12 Juli 2021';
 
 // getAllDate(testString2);
-EngineTask1(testString);
-// EngineTask2(testString);
+// EngineTask1(testString);
+EngineTask2(testString);
 
 // var newDate = new Date("12 Juni 2025");
 // console.log(newDate);
