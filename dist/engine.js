@@ -1,7 +1,7 @@
 const DB = require('./database.js');
 
-// DB.createDatabase();
-// DB.createTable();
+//DB.createDatabase();
+DB.createTable();
 
 function buildPatternTable(pattern) {
   const patternTable = [0];
@@ -75,7 +75,7 @@ function getDate(inputString, ptrRegexDate) {
 }
 
 function getAllDate(inputString) {
-  let ptrDate = /([0-9]{2}|[0-9]{1})\s((J|j)anuari|(F|f)ebruari|(M|m)aret|(A|a)pril|(M|m)ei|(J|j)uni|(J|j)uli|(A|a)gustus|(S|s)eptember|(O|o)tokber|(N|n)ovember|(D|d)ecember)\s[0-9]{4}/g; // dd mm yyyy
+  let ptrDate = /([0-9]{2}|[0-9]{1})\s((J|j)anuari|(F|f)ebruari|(M|m)aret|(A|a)pril|(M|m)ei|(J|j)uni|(J|j)uli|(A|a)gustus|(S|s)eptember|(O|o)ktober|(N|n)ovember|(D|d)ecember)\s[0-9]{4}/g; // dd mm yyyy
 
   let arrPattern = [];
   arrPattern.push(ptrDate);
@@ -86,7 +86,7 @@ function getAllDate(inputString) {
     result.push(getDate(inputString, item));
   });
 
-  console.log(result);
+  //console.log(result);
 
   return result;
 }
@@ -165,21 +165,32 @@ function EngineTask2(inputString) {
 let testString = 'Hallo bot tolong ingatkan Kuis IF2210 String Matching pada 12 Juli 2021';
 
 // getAllDate(testString2);
-EngineTask1(testString);
+//EngineTask1(testString);
 // EngineTask2(testString);
 
-// var newDate = new Date("12 Juni 2025");
-// console.log(newDate);
-// console.log(newDate.toLocaleString());
-// console.log(newDate.getFullYear());
-// console.log(newDate.getMonth());
-// console.log(newDate.getDate());
+var newDate = new Date("12 Januari 2025");
+//console.log(newDate);
+//console.log(newDate.toLocaleString());
+//console.log(newDate.getFullYear());
+//console.log(newDate.getMonth()+1);
+//console.log(newDate.getDate());
 
 
+function help(){
+  console.log('Fitur VCS Bot :\n- 1. Menambahkan task baru\n- 2. Melihat daftar task yang harus dikerjakan\n- 3. Menampilkan deadline dari suatu task tertentu\n- 4. Memperbaharui task tertentu\n- 5. Menandai bahwa suatu task sudah selesai dikerjakan\n\nDaftar kata penting yang harus anda muat salah satu didalam chat anda ialah : Kuis, Ujian, Tucil, Tubes, Praktikum\n\n- Periode date 1 sampai date 2, usage : Apa saja deadline antara date1 sampai date2 ?\n- N Minggu kedepan, usage : Deadline N minggu kedepan apa saja ?\n- N Hari kedepan, usage : Deadline N hari kedepan apa saja ?\n- Hari ini, usage : Apa saja deadline hari ini ?\n- Menampilkan deadline tertentu : Deadline tugas tugas123 itu kapan ?\n- Ingin menyesuaikan deadline task, usage : Deadline tugas tugas123 diundur/dimajukan menjadi date123\n- Menyelesaikan tugas, usage : Saya sudah selesai mengerjakan task task123 ( ID Task tersebut )')
+}
+
+help();
 
 
+function handleDate(date,asu,num){
+  if (asu == "minggu")
+  console.log(date.getFullYear());
+  console.log(date.getMonth()+1);
+  console.log(date.getDate());
+}
 
-
+handleDate(newDate);
 
 
 
