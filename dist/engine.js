@@ -1,5 +1,8 @@
 const DB = require('./database.js');
 
+// DB.createDatabase();
+// DB.createTable();
+
 function buildPatternTable(pattern) {
   const patternTable = [0];
   let prefixIndex = 0;
@@ -51,6 +54,8 @@ function knuthMorrisPratt(text, word) {
 
 function getDate(inputString, ptrRegexDate) {
   let result = inputString.matchAll(ptrRegexDate);
+  let ptrDate = /([0-9]{2}|[0-9]{1})\s((J|j)anuari|(F|f)ebruari|(M|m)aret|(A|a)pril|(M|m)ei|(J|j)uni|(J|j)uli|(A|a)gustus|(S|s)eptember|(O|o)tokber|(N|n)ovember|(D|d)esember)\s[0-9]{4}/g; // dd mm yyyy
+
   result = Array.from(result);
 
   if (result.length > 0) {
@@ -60,31 +65,28 @@ function getDate(inputString, ptrRegexDate) {
       arr.forEach((item) => {
         arrDate.push(new Date(item[0]));
       });
-
       return arrDate;
     } 
-    let date = new Date(result[0][0]);
-    return date;
+
+    return new Date(result[0][0]);    
   }
 
   return false;
 }
 
 function getAllDate(inputString) {
-  let ptrDate1 = /[0-9]{2}([\-/ \.])[0-9]{2}[\-/ \.]([0-9]{4}|[0-9]{2}\s)/g; // dd/mm/yyyy
-  let ptrDate2 = /[0-9]{4}([\B\-/ \.])[0-9]{2}[\-/ \.][0-9]{2}/g; // yyyy/mm/dd
-  let ptrDate3 = /[0-9]{2}\s((J|j)anuari|(F|f)ebruari|(M|m)aret|(A|a)pril|(M|m)ei|(J|j)uni|(J|j)uli|(A|a)gustus|(S|s)eptember|(O|o)tokber|(N|n)ovember|(D|d)esember)\s[0-9]{4}/g; // dd mm yyyy
+  let ptrDate = /([0-9]{2}|[0-9]{1})\s((J|j)anuari|(F|f)ebruari|(M|m)aret|(A|a)pril|(M|m)ei|(J|j)uni|(J|j)uli|(A|a)gustus|(S|s)eptember|(O|o)tokber|(N|n)ovember|(D|d)ecember)\s[0-9]{4}/g; // dd mm yyyy
 
   let arrPattern = [];
-  arrPattern.push(ptrDate1);
-  arrPattern.push(ptrDate2);
-  arrPattern.push(ptrDate3);
+  arrPattern.push(ptrDate);
 
   let result = [];
 
   arrPattern.forEach((item) => {
     result.push(getDate(inputString, item));
   });
+
+  console.log(result);
 
   return result;
 }
@@ -101,10 +103,23 @@ function getIDMatkul(inputString) {
       arrIDMatkul.push(item[0]);
     });
 
-    return arrIDMatkul;
+    return [arrIDMatkul, result[0].index];
   }
 
   return false;
+}
+
+function getDescription(inputString, indexMatkul) {
+  let indexPada = knuthMorrisPratt(inputString, "pada");
+  let description;
+
+  if (indexPada != -1) {
+    description = inputString.slice(indexMatkul+7, indexPada);
+  } else {
+    description = false;
+  }
+
+  return description;
 }
 
 function EngineTask1(inputString) {
@@ -120,26 +135,115 @@ function EngineTask1(inputString) {
     }
   });
 
-  for (let item of arrDate) {
-    if (item) {
-      arrDate = item;
-      singleDate = new Date(item);
-      break;
-    } else {
-      arrDate = false;
-    }
+  if (arrDate.length == 1) {
+    singleDate = new Date(arrDate[0]);
+  } else {
+    singleDate = false;
   }
 
-  if (tugas && arrIDMatkul && arrDate) {
+  if (tugas && arrIDMatkul && singleDate) {
     console.log("[TASK BERHASIL DICATAT]");
-    console.log(`ID - ${singleDate.toLocaleDateString()} - ${arrIDMatkul} - ${tugas}`);
+    console.log(`ID - ${singleDate.toLocaleDateString()} - ${arrIDMatkul[0]} - ${tugas} - ${getDescription(inputString, arrIDMatkul[1])}`);
+    
+    let date = `${singleDate.getDate()}/${singleDate.getMonth()+1}/${singleDate.getFullYear()}`;
+    console.log(date);
+    
+    DB.insertToDB(date, arrIDMatkul[0], tugas, getDescription(inputString, arrIDMatkul[1]).trim());
   } else {
     console.log("Non Valid");
   }
 }
 
 let testString = 'Hallo bisa bantu IF2210 tugasku ga 01/09/2021 IF2300 sampai 05/12/24 12 maret 2020 sampai 2020/12/06';
-let testString2 = 'Hallo tolong ingatkan Kuis IF2211 String Matching pada 2020/12/06';
+let testString2 = 'Hallo bot tolong ingatkan Kuis IF2210 String Matching pada 12 Juli 2021';
+let testString3 = "12 Juni 2025 29 April 2030";
 
-// console.log(getAllDate(testString));
+// getAllDate(testString2);
 EngineTask1(testString2);
+
+// var newDate = new Date("12 Juni 2025");
+// console.log(newDate);
+// console.log(newDate.toLocaleString());
+// console.log(newDate.getFullYear());
+// console.log(newDate.getMonth());
+// console.log(newDate.getDate());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// function getDate(inputString, ptrRegexDate) {
+//   let result = inputString.matchAll(ptrRegexDate);
+//   let ptrDate = /([0-9]{2}|[0-9]{1})\s((J|j)anuari|(F|f)ebruari|(M|m)aret|(A|a)pril|(M|m)ei|(J|j)uni|(J|j)uli|(A|a)gustus|(S|s)eptember|(O|o)tokber|(N|n)ovember|(D|d)esember)\s[0-9]{4}/g; // dd mm yyyy
+
+//   result = Array.from(result);
+
+//   if (result.length > 0) {
+//     if (result.length > 1) {
+//       let arr = result;
+//       let arrDate = [];
+//       arr.forEach((item) => {
+//         arrDate.push(new Date(item[0]));
+//       });
+//       return arrDate;
+//     } 
+
+//     return result[0][0];    
+//   }
+
+//   return false;
+// }
+
+// function getAllDate(inputString) {
+//   let ptrDate1 = /[0-9]{2}([\-/ \.])[0-9]{2}[\-/ \.]([0-9]{4}|[0-9]{2}\s)/g; // dd/mm/yyyy
+//   let ptrDate2 = /[0-9]{4}([\B\-/ \.])[0-9]{2}[\-/ \.][0-9]{2}/g; // yyyy/mm/dd
+//   let ptrDate3 = /([0-9]{2}|[0-9]{1})\s((J|j)anuari|(F|f)ebruari|(M|m)aret|(A|a)pril|(M|m)ei|(J|j)uni|(J|j)uli|(A|a)gustus|(S|s)eptember|(O|o)tokber|(N|n)ovember|(D|d)ecember)\s[0-9]{4}/g; // dd mm yyyy
+
+//   let arrPattern = [];
+//   arrPattern.push(ptrDate1);
+//   arrPattern.push(ptrDate2);
+//   arrPattern.push(ptrDate3);
+
+//   let result = [];
+
+//   arrPattern.forEach((item) => {
+//     result.push(getDate(inputString, item));
+//   });
+
+//   console.log(result);
+
+//   return result;
+// }
