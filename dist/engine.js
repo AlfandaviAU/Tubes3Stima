@@ -125,7 +125,6 @@ function getIDTask(inputString) {
   let matkulPtr = /ID_\d{4}IF\d{4}/g;
   let result = inputString.matchAll(matkulPtr);
   result = Array.from(result);
-
   return result;
 }
 
@@ -224,48 +223,51 @@ var newDate = new Date("12 Januari 2025");
 //console.log(newDate.getMonth()+1);
 //console.log(newDate.getDate());
 
-function EngineTask6(text){
+function EngineTask5(text){
   let kataKunci = ['selesai', 'sudah', 'tuntas', 'telah', 'beres','kelar','rampung','mari'];
-  let id_tugas = "ID_1202IF2210";
+  let id_tugas = getIDTask(text);
   var i;
   var asuLagi = false;
   
-  for (i = 0; i < kataKunci.length; i++){
-    let asu = knuthMorrisPratt(text,kataKunci[i]);
-    if (asu != -1){
-      asuLagi =true;
-      break;
-    }
-  }
-  
-  var result = true;
-
-  DB.con.connect((err) => {  
-    if (err) throw err;
-    let sql = `SELECT * FROM jadwal WHERE id_tugas='${id_tugas}'`;
-
-    DB.con.query(sql, (err, res) => {
-      if (!err) {
-        console.log(res.length);
-
-        if (res.length != 0) {
-            let sql = `UPDATE jadwal SET status = 'T' WHERE id_tugas = '${id_tugas}'`;
-            DB.con.query(sql, function (err, result) {
-              if (err) throw err;
-              console.log(result.affectedRows + " record(s) updated");
-            });
-          
-        } else {
-          console.log("Task tidak ditemukan");
-        }
+  if (id_tugas.length != 1){
+    console.log("Masukan invalid, silahkan masukkan 1 id_tugas saja");
+  }else{
+    for (i = 0; i < kataKunci.length; i++){
+      let asu = knuthMorrisPratt(text,kataKunci[i]);
+      if (asu != -1){
+        asuLagi =true;
+        break;
       }
+    }
+    
+    var result = true;
+  
+    DB.con.connect((err) => {  
+      if (err) throw err;
+      let sql = `SELECT * FROM jadwal WHERE id_tugas='${id_tugas[0][0]}'`;
+  
+      DB.con.query(sql, (err, res) => {
+        if (!err) {
+          console.log(res.length);
+  
+          if (res.length != 0) {
+              let sql = `UPDATE jadwal SET status = 'T' WHERE id_tugas = '${id_tugas[0][0]}'`;
+              DB.con.query(sql, function (err, result) {
+                if (err) throw err;
+                console.log(result.affectedRows + " record(s) updated");
+              });
+            
+          } else {
+            console.log("Task tidak ditemukan");
+          }
+        }
+      });
     });
-  });
-  
-  
+  }
+
 }
 
-// EngineTask6("asu ancok ancok");
+EngineTask5("asu ancok ancok selesai ID_0712IF2210 ID_1212IF2210");
 
 function help(){
   console.log('Fitur VCS Bot :\n- 1. Menambahkan task baru\n- 2. Melihat daftar task yang harus dikerjakan\n- 3. Menampilkan deadline dari suatu task tertentu\n- 4. Memperbaharui task tertentu\n- 5. Menandai bahwa suatu task sudah selesai dikerjakan\n\nDaftar kata penting yang harus anda muat salah satu didalam chat anda ialah : Kuis, Ujian, Tucil, Tubes, Praktikum\n\n- Periode date 1 sampai date 2, usage : Apa saja deadline antara date1 sampai date2 ?\n- N Minggu kedepan, usage : Deadline N minggu kedepan apa saja ?\n- N Hari kedepan, usage : Deadline N hari kedepan apa saja ?\n- Hari ini, usage : Apa saja deadline hari ini ?\n- Menampilkan deadline tertentu : Deadline tugas tugas123 itu kapan ?\n- Ingin menyesuaikan deadline task, usage : Deadline tugas tugas123 diundur/dimajukan menjadi date123\n- Menyelesaikan tugas, usage : Saya sudah selesai mengerjakan task task123 ( ID Task tersebut )')
