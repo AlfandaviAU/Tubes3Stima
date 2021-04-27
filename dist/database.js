@@ -3,17 +3,15 @@ let mysql = require('mysql');
 let con = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "123456",
-  database: "stima",
-  port: "3307"
+  password: "root",
+  database: "stima"
 });
 
 const createDatabase = () => {
   let con = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "123456",
-    port: "3307"
+    password: "root"
   });
   
   con.connect(function(err) {
@@ -50,29 +48,9 @@ const insertToDB = (id_tugas,tgl, kode, nama, deskripsi,status) => {
   });
 }
 
-const selectDesc = (deskripsi) => {
-  let result = false;
-
-  con.connect((err) => {  
-    if (err) throw err;
-    let sql = `SELECT * FROM jadwal WHERE deskripsi='${deskripsi}'`;
-
-    con.query(sql, (err, res) => {
-      if (!err) {
-        console.log(res);
-        return () => {
-          this.result = true;
-        }
-      }
-    });
-  });
-
-  return result;
-}
-
 module.exports = {
   createDatabase: createDatabase,
   createTable: createTable,
   insertToDB: insertToDB,
-  selectDesc: selectDesc
+  con: con
 }

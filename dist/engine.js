@@ -1,3 +1,4 @@
+let mysql = require('mysql');
 const DB = require('./database.js');
 
 //DB.createDatabase();
@@ -86,8 +87,6 @@ function getAllDate(inputString) {
     result.push(getDate(inputString, item));
   });
 
-  //console.log(result);
-
   return result;
 }
 
@@ -128,6 +127,8 @@ function EngineTask1(inputString) {
   let arrDate = getAllDate(inputString);
   let tugas = false;
   let singleDate;
+  let id_tugas;
+  let status = "F";
 
   kataKunci.forEach((item) => {
     if (knuthMorrisPratt(inputString, item) != -1) {
@@ -140,6 +141,7 @@ function EngineTask1(inputString) {
   } else {
     singleDate = false;
   }
+
   if (singleDate.getMonth()+1 < 10){
     if (singleDate.getDate() < 10){
       id_tugas = "ID_0"+(singleDate.getMonth()+1) + "0"+ singleDate.getDate()+ arrIDMatkul[0];
@@ -153,33 +155,73 @@ function EngineTask1(inputString) {
       id_tugas = "ID_"+(singleDate.getMonth()+1) + singleDate.getDate()+ arrIDMatkul[0];
     }
   }
-  status = "F";
+  
   if (tugas && arrIDMatkul && singleDate) {
     console.log("[TASK BERHASIL DICATAT]");
     console.log(`(ID: 1) - ${singleDate.toLocaleDateString()} - ${arrIDMatkul[0]} - ${tugas} - ${getDescription(inputString, arrIDMatkul[1])}`);
     
     let date = `${singleDate.getDate()}/${singleDate.getMonth()+1}/${singleDate.getFullYear()}`;
     
-    DB.insertToDB(id_tugas,date, arrIDMatkul[0], tugas, getDescription(inputString, arrIDMatkul[1]).trim(),status);
+    DB.insertToDB(id_tugas, date, arrIDMatkul[0], tugas, getDescription(inputString, arrIDMatkul[1]).trim(), status);
   } else {
     console.log("Non Valid");
   }
 }
 
-function EngineTask2(inputString) {
+function EngineTask4(inputString) {
   let date = getAllDate(inputString);
-  let description = getDescription(inputString);
+  let description = 'String Matching';
+  var result = true;
 
-  console.log(description);
-  let res = DB.selectDesc("String Matching");
-  console.log(res);
+  DB.con.connect((err) => {  
+    if (err) throw err;
+    let sql = `SELECT * FROM jadwal WHERE deskripsi='${description}'`;
+
+    DB.con.query(sql, (err, res) => {
+      if (!err) {
+        console.log(res.length);
+
+        if (res.length != 0) {
+          
+            var sql = `UPDATE jadwal SET tanggal = '69/69/2068' WHERE deskripsi = '${description}'`;
+            DB.con.query(sql, function (err, result) {
+              if (err) throw err;
+              console.log(result.affectedRows + " record(s) updated");
+            });
+          
+        } else {
+          console.log("Task tidak ditemukan");
+        }
+      }
+    });
+  });
+
+  console.log(result);
+}
+
+function isDataExist (deskripsi) {
+  let result = false;
+
+  DB.con.connect((err) => {  
+    if (err) throw err;
+    let sql = `SELECT * FROM jadwal WHERE deskripsi='${deskripsi}'`;
+
+    DB.con.query(sql, (err, res) => {
+      if (!err) {
+        console.log(res);
+        result = true;
+      }
+    });
+  });
+
+  return result;
 }
 
 let testString = 'Hallo bot tolong ingatkan Kuis IF2210 String Matching pada 2 December 2021';
 
 // getAllDate(testString2);
-EngineTask1(testString);
-// EngineTask2(testString);
+// EngineTask1(testString);
+EngineTask4(testString);
 
 var newDate = new Date("12 Januari 2025");
 //console.log(newDate);
@@ -193,26 +235,21 @@ function help(){
   console.log('Fitur VCS Bot :\n- 1. Menambahkan task baru\n- 2. Melihat daftar task yang harus dikerjakan\n- 3. Menampilkan deadline dari suatu task tertentu\n- 4. Memperbaharui task tertentu\n- 5. Menandai bahwa suatu task sudah selesai dikerjakan\n\nDaftar kata penting yang harus anda muat salah satu didalam chat anda ialah : Kuis, Ujian, Tucil, Tubes, Praktikum\n\n- Periode date 1 sampai date 2, usage : Apa saja deadline antara date1 sampai date2 ?\n- N Minggu kedepan, usage : Deadline N minggu kedepan apa saja ?\n- N Hari kedepan, usage : Deadline N hari kedepan apa saja ?\n- Hari ini, usage : Apa saja deadline hari ini ?\n- Menampilkan deadline tertentu : Deadline tugas tugas123 itu kapan ?\n- Ingin menyesuaikan deadline task, usage : Deadline tugas tugas123 diundur/dimajukan menjadi date123\n- Menyelesaikan tugas, usage : Saya sudah selesai mengerjakan task task123 ( ID Task tersebut )')
 }
 
-help();
+//help();
+
+
+// function handleDate(date,asu,num){
+//   if (asu == "minggu")
+//   console.log(date.getFullYear());
+//   console.log(date.getMonth()+1);
+//   console.log(date.getDate());
+// }
+
+// handleDate(newDate);
 
 
 
-function EngineTask6(text){
-  let kataKunci = ['selesai', 'sudah', 'tuntas', 'telah', 'beres','kelar','rampung','mari'];
-  
-  var i;
-  var asuLagi = false;
-  for (i = 0; i < kataKunci.length; i++){
-    let asu = knuthMorrisPratt(text,kataKunci[i]);
-    if (asu != -1){
-      asuLagi =true;
-      break;
-    }
-  }
-  console.log("KNUT ASU : "+asuLagi);
-}
 
-EngineTask6("asu ancok ancok");
 
 
 
