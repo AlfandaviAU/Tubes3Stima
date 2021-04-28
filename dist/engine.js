@@ -212,6 +212,8 @@ function EngineTask2(inputString) {
   // Contoh perintah yang dapat digunakan: “Apa saja deadline yang dimiliki
   // sejauh ini?”
 
+  let kataKunci = ['hari ini'];
+
   let kataKunciA = ['milik'];
   let kataKunciB = ['antara'];
   let kataKunciC = ['minggu ke depan'];
@@ -222,6 +224,42 @@ function EngineTask2(inputString) {
 
   let convertDay = getConvert(inputString, ptrRegexDay);
   let convertWeek = getConvert(inputString, ptrRegexWeek);
+
+  kataKunci.forEach((item) => {
+    let result = KMP(inputString, item);
+
+    if (result != -1) {
+      kataKunci = item;
+    } else {
+      kataKunci = false;
+    }
+  });
+
+  if (kataKunci != false) {
+    DB.con.connect((err) => {  
+      if (err) throw err;
+      let sql = `SELECT * FROM jadwal WHERE tanggal='${dateNow}'`;
+      DB.con.query(sql, (err, res) => {
+        if (!err) {
+          res.forEach((item) => {
+            let x = JSON.parse(JSON.stringify(item));
+            let newDate = new Date(x.tanggal);
+            newDate = `${newDate.getFullYear()}-${newDate.getMonth()+1}-${newDate.getDate()}`;
+
+            console.log("ID : "+x.id);
+            console.log("ID TUGAS : "+x.id_tugas);
+            console.log("TANGGAL : "+ newDate);
+            console.log("KODE : "+x.kode);
+            console.log("NAMA TUGAS : "+x.nama_tugas);
+            console.log("DESKRIPSI : "+x.deskripsi);
+            console.log("STATUS : "+x.status+"\n");
+          });
+        }
+      });
+    });
+  }
+
+  console.log(kataKunci);
 
   if (convertDay != false) {
     convertDay = parseInt(convertDay) * 86400000;
@@ -469,15 +507,15 @@ function EngineTask5(text){
   }
 }
 
-let testString = 'Hallo bot tolong ingatkan Kuis IF1150 AngularJS pada 17 May 2021';
+let testString = 'Hallo bot tolong ingatkan Kuis IF1150 AngularJS pada 28 April 2021';
 let testString2 = 'Apa saja deadline yang dimiliki sejauh ini ?';
 let testString3 = 'Kapan deadline tugas IF2210 ?';
 let testString4 = 'Deadline task ID_0423IF2100 diundur menjadi 10 April 2020';
 let testString5 = 'Saya sudah mengerjakan task ID_0809IF4902';
 let testString6 = 'Deadline 2 minggu ke depan apa saja';
+let testString7 = 'Apa saja deadline hari ini ?';
 
-
-EngineTask2(testString6);
+EngineTask2(testString7);
 
 function help(){
   console.log('Fitur VCS Bot :\n- 1. Menambahkan task baru\n- 2. Melihat daftar task yang harus dikerjakan\n- 3. Menampilkan deadline dari suatu task tertentu\n- 4. Memperbaharui task tertentu\n- 5. Menandai bahwa suatu task sudah selesai dikerjakan\n\nDaftar kata penting yang harus anda muat salah satu didalam chat anda ialah : Kuis, Ujian, Tucil, Tubes, Praktikum\n\n- Periode date 1 sampai date 2, usage : Apa saja deadline antara date1 sampai date2 ?\n- N Minggu kedepan, usage : Deadline N minggu kedepan apa saja ?\n- N Hari kedepan, usage : Deadline N hari kedepan apa saja ?\n- Hari ini, usage : Apa saja deadline hari ini ?\n- Menampilkan deadline tertentu : Deadline tugas tugas123 itu kapan ?\n- Ingin menyesuaikan deadline task, usage : Deadline tugas tugas123 diundur/dimajukan menjadi date123\n- Menyelesaikan tugas, usage : Saya sudah selesai mengerjakan task task123 ( ID Task tersebut )')
