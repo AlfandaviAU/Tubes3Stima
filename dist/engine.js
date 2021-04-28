@@ -82,7 +82,7 @@ function getAllDate(inputString) {
 
   let result = [];
 
-  console.log(result);
+  // console.log(result);
 
   arrPattern.forEach((item) => {
     result.push(getDate(inputString, item));
@@ -213,7 +213,7 @@ function EngineTask2(inputString) {
   // sejauh ini?”
 
   let kataKunci = ['hari ini'];
-
+  let keyword = ['kuis', 'ujian', 'tucil', 'tubes', 'praktikum'];
   let kataKunciA = ['milik'];
   let kataKunciB = ['antara'];
   let kataKunciC = ['minggu ke depan'];
@@ -235,10 +235,24 @@ function EngineTask2(inputString) {
     }
   });
 
+  let keywordAsu = ["asu"];
+
+  keyword.forEach((item) => {
+    let result = KMP(inputString, item);
+
+    if (result != -1) {
+      keywordAsu = item;
+    }
+  });
   if (kataKunci != false) {
     DB.con.connect((err) => {  
       if (err) throw err;
-      let sql = `SELECT * FROM jadwal WHERE tanggal='${dateNow}'`;
+      let sql = `SELECT T.* FROM (
+        SELECT a.*
+        FROM jadwal a
+        WHERE a.tanggal='${dateNow}'
+      ) AS T WHERE T.nama_tugas = '${keywordAsu}';
+      `;
       DB.con.query(sql, (err, res) => {
         if (!err) {
           res.forEach((item) => {
@@ -259,7 +273,7 @@ function EngineTask2(inputString) {
     });
   }
 
-  console.log(kataKunci);
+  // console.log(kataKunci);
 
   if (convertDay != false) {
     convertDay = parseInt(convertDay) * 86400000;
@@ -269,7 +283,12 @@ function EngineTask2(inputString) {
 
     DB.con.connect((err) => {  
       if (err) throw err;
-      let sql = `SELECT * FROM jadwal WHERE tanggal BETWEEN '${dateNow}' AND '${dateLater}'`;
+      let sql = `SELECT T.* FROM (
+        SELECT a.*
+        FROM jadwal a
+        WHERE a.tanggal BETWEEN '${dateNow}' AND '${dateLater}'
+      ) AS T WHERE T.nama_tugas = '${keywordAsu}';
+      `;
       DB.con.query(sql, (err, res) => {
         if (!err) {
           res.forEach((item) => {
@@ -298,7 +317,12 @@ function EngineTask2(inputString) {
 
     DB.con.connect((err) => {  
       if (err) throw err;
-      let sql = `SELECT * FROM jadwal WHERE tanggal BETWEEN '${dateNow}' AND '${dateLater}'`;
+      let sql = `SELECT T.* FROM (
+        SELECT a.*
+        FROM jadwal a
+        WHERE a.tanggal BETWEEN '${dateNow}' AND '${dateLater}'
+      ) AS T WHERE T.nama_tugas = '${keywordAsu}';
+      `;
       DB.con.query(sql, (err, res) => {
         if (!err) {
           res.forEach((item) => {
@@ -507,13 +531,13 @@ function EngineTask5(text){
   }
 }
 
-let testString = 'Hallo bot tolong ingatkan Kuis IF1150 AngularJS pada 28 April 2021';
+let testString = 'Hallo bot tolong ingatkan Tucil IF2150 AngularJS pada 9 May 2021';
 let testString2 = 'Apa saja deadline yang dimiliki sejauh ini ?';
 let testString3 = 'Kapan deadline tugas IF2210 ?';
 let testString4 = 'Deadline task ID_0423IF2100 diundur menjadi 10 April 2020';
 let testString5 = 'Saya sudah mengerjakan task ID_0809IF4902';
 let testString6 = 'Deadline 2 minggu ke depan apa saja';
-let testString7 = 'Apa saja deadline hari ini ?';
+let testString7 = 'Apa saja deadline tucil 20 hari ke depan ?';
 
 EngineTask2(testString7);
 
