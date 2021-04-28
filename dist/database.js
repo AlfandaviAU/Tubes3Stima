@@ -3,17 +3,15 @@ let mysql = require('mysql');
 let con = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "123456",
-  database: "stima",
-  port: "3307"
+  password: "root",
+  database: "stima"
 });
 
 const createDatabase = () => {
   let con = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "123456",
-    port: "3307"
+    password: "root"
   });
   
   con.connect(function(err) {
@@ -30,7 +28,7 @@ const createTable = () => {
   con.connect(function(err) {
     if (err) throw err;
     console.log("Connected!");
-    var sql = "CREATE TABLE jadwal (id INT AUTO_INCREMENT PRIMARY KEY, id_tugas VARCHAR(255), tanggal VARCHAR(255), kode VARCHAR(255), nama_tugas VARCHAR(255), deskripsi VARCHAR(255), status VARCHAR(1))";
+    var sql = "CREATE TABLE jadwal (id INT AUTO_INCREMENT PRIMARY KEY, id_tugas VARCHAR(255), tanggal DATE, kode VARCHAR(255), nama_tugas VARCHAR(255), deskripsi VARCHAR(255), status VARCHAR(1))";
     con.query(sql, function (err, result) {
       if (err) throw err;
       console.log("Table created");

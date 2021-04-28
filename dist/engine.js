@@ -1,7 +1,7 @@
 let mysql = require('mysql');
 const DB = require('./database.js');
 
-//DB.createDatabase();
+// DB.createDatabase();
 // DB.createTable();
 
 function buildPatternTable(pattern) {
@@ -81,6 +81,8 @@ function getAllDate(inputString) {
   arrPattern.push(ptrDate);
 
   let result = [];
+
+  console.log(result);
 
   arrPattern.forEach((item) => {
     result.push(getDate(inputString, item));
@@ -181,7 +183,7 @@ function EngineTask1(inputString) {
     console.log("[TASK BERHASIL DICATAT]");
     console.log(`(ID: 1) - ${singleDate.toLocaleDateString()} - ${arrIDMatkul[0]} - ${tugas} - ${getDescription(inputString, arrIDMatkul[1])}`);
     
-    let date = `${singleDate.getDate()}/${singleDate.getMonth()+1}/${singleDate.getFullYear()}`;
+    let date = `${singleDate.getFullYear()}-${singleDate.getMonth()+1}-${singleDate.getDate()}`;
     
     DB.insertToDB(id_tugas, date, arrIDMatkul[0], tugas, getDescription(inputString, arrIDMatkul[1]).trim(), status);
   } else {
@@ -190,79 +192,63 @@ function EngineTask1(inputString) {
   }
 }
 
+function getConvert(inputString, rgxPtr) {
+  let result = inputString.matchAll(rgxPtr);
+  result = Array.from(result);
+
+  if (result.length > 0) {
+    return result[0][0].split(" ")[0];
+  } else {
+    return false;
+  }
+}
+
+
 function EngineTask2(inputString) {
   let ptrRegexWeek = /\d{1,}\sminggu/g;
   let ptrRegexDay = /\d{1,}\shari/g;
+
   // a. Seluruh task yang sudah tercatat oleh assistant
   // Contoh perintah yang dapat digunakan: “Apa saja deadline yang dimiliki
   // sejauh ini?”
+
+  let kataKunci = ['hari ini'];
 
   let kataKunciA = ['milik'];
   let kataKunciB = ['antara'];
   let kataKunciC = ['minggu ke depan'];
   let id_tugas = getIDTask(inputString);
   let id_date = getAllDate(inputString);
+  let timeNow = new Date();
+  let dateNow = `${timeNow.getFullYear()}-${timeNow.getMonth()+1}-${timeNow.getDate()}`;
 
-  let date1 = id_date[0][0].getDate()+"/"+(id_date[0][0].getMonth()+1)+"/"+id_date[0][0].getFullYear();
-  let date2 = id_date[0][1].getDate()+"/"+(id_date[0][1].getMonth()+1)+"/"+id_date[0][1].getFullYear();
+  let convertDay = getConvert(inputString, ptrRegexDay);
+  let convertWeek = getConvert(inputString, ptrRegexWeek);
 
-  let tanggalAsu = id.date[0][0].getTime();
-  // console.log(date2);
-  let date3 = id_date[0][0]+1;
-  console.log(date3);
-  console.log("asu");
-  console.log(id_date[0][0].getMilliseconds());
-  let kunciA = " ";
-  let kunciB = " ";
-  let kunciC = " ";
+  kataKunci.forEach((item) => {
+    let result = KMP(inputString, item);
 
-  kataKunciA.forEach((item) => {
-    if (KMP(inputString, item) != -1) {
-      kunciA = item;
+    if (result != -1) {
+      kataKunci = item;
+    } else {
+      kataKunci = false;
     }
   });
 
-  kataKunciB.forEach((item) => {
-    if (KMP(inputString, item) != -1) {
-      kunciB = item;
-    }
-  });
-
-
-  if (kunciA != " ") {
+  if (kataKunci != false) {
     DB.con.connect((err) => {  
       if (err) throw err;
-      let sql = `SELECT * FROM jadwal`;
-  
-      DB.con.query(sql, (err, res) => {
-        if (!err) {    
-          res.forEach((item) => {
-            let x = JSON.parse(JSON.stringify(item));
-            console.log("ID : "+x.id);
-            console.log("ID TUGAS : "+x.id_tugas);
-            console.log("TANGGAL : "+x.tanggal);
-            console.log("KODE : "+x.kode);
-            console.log("NAMA TUGAS : "+x.nama_tugas);
-            console.log("DESKRIPSI : "+x.deskripsi);
-            console.log("STATUS : "+x.status+"\n");
-          });
-        }
-      });
-    });
-  }
-  if (kunciB != " ") {
-    DB.con.connect((err) => {  
-      if (err) throw err;
-      let sql = `SELECT * FROM jadwal WHERE tanggal BETWEEN '${date1}' AND '${date2}'`;
-      // console.log(date1);
-      // console.log(date2);
+      let sql = `SELECT * FROM jadwal WHERE tanggal='${dateNow}'`;
       DB.con.query(sql, (err, res) => {
         if (!err) {
           res.forEach((item) => {
             let x = JSON.parse(JSON.stringify(item));
+            let newDate = new Date(x.tanggal);
+            newDate = `${newDate.getFullYear()}-${newDate.getMonth()+1}-${newDate.getDate()}`;
+
             console.log("ID : "+x.id);
             console.log("ID TUGAS : "+x.id_tugas);
-            console.log("TANGGAL : "+x.tanggal);
+            console.log("TANGGAL : "+ newDate);
             console.log("KODE : "+x.kode);
             console.log("NAMA TUGAS : "+x.nama_tugas);
             console.log("DESKRIPSI : "+x.deskripsi);
@@ -272,6 +258,137 @@ function EngineTask2(inputString) {
       });
     });
   }
+
+  console.log(kataKunci);
+
+  if (convertDay != false) {
+    convertDay = parseInt(convertDay) * 86400000;
+    convertDay = new Date(timeNow.getTime() + convertDay);
+
+    let dateLater = `${convertDay.getFullYear()}-${convertDay.getMonth()+1}-${convertDay.getDate()}`;
+
+    DB.con.connect((err) => {  
+      if (err) throw err;
+      let sql = `SELECT * FROM jadwal WHERE tanggal BETWEEN '${dateNow}' AND '${dateLater}'`;
+      DB.con.query(sql, (err, res) => {
+        if (!err) {
+          res.forEach((item) => {
+            let x = JSON.parse(JSON.stringify(item));
+            let newDate = new Date(x.tanggal);
+            newDate = `${newDate.getFullYear()}-${newDate.getMonth()+1}-${newDate.getDate()}`;
+
+            console.log("ID : "+x.id);
+            console.log("ID TUGAS : "+x.id_tugas);
+            console.log("TANGGAL : "+ newDate);
+            console.log("KODE : "+x.kode);
+            console.log("NAMA TUGAS : "+x.nama_tugas);
+            console.log("DESKRIPSI : "+x.deskripsi);
+            console.log("STATUS : "+x.status+"\n");
+          });
+        }
+      });
+    });
+  }
+
+  if (convertWeek != false) {
+    convertWeek = parseInt(convertWeek) * 7 * 86400000;
+    convertWeek = new Date(timeNow.getTime() + convertWeek);
+
+    let dateLater = `${convertWeek.getFullYear()}-${convertWeek.getMonth()+1}-${convertWeek.getDate()}`;
+
+    DB.con.connect((err) => {  
+      if (err) throw err;
+      let sql = `SELECT * FROM jadwal WHERE tanggal BETWEEN '${dateNow}' AND '${dateLater}'`;
+      DB.con.query(sql, (err, res) => {
+        if (!err) {
+          res.forEach((item) => {
+            let x = JSON.parse(JSON.stringify(item));
+            let newDate = new Date(x.tanggal);
+            newDate = `${newDate.getFullYear()}-${newDate.getMonth()+1}-${newDate.getDate()}`;
+
+            console.log("ID : "+x.id);
+            console.log("ID TUGAS : "+x.id_tugas);
+            console.log("TANGGAL : "+ newDate);
+            console.log("KODE : "+x.kode);
+            console.log("NAMA TUGAS : "+x.nama_tugas);
+            console.log("DESKRIPSI : "+x.deskripsi);
+            console.log("STATUS : "+x.status+"\n");
+          });
+        }
+      });
+    });
+  }
+
+  // let date1 = id_date[0][0].getDate()+"/"+(id_date[0][0].getMonth()+1)+"/"+id_date[0][0].getFullYear();
+  // let date2 = id_date[0][1].getDate()+"/"+(id_date[0][1].getMonth()+1)+"/"+id_date[0][1].getFullYear();
+  
+  // let newDate = new Date(id_date[0]);
+  // console.log(newDate);
+  // console.log(newDate.getTime());
+  // let mil = newDate.getTime() + 86400000;
+  // console.log(mil);
+  // let newDate2 = new Date(mil);
+  // console.log(newDate2.toDateString());
+  // let kunciA = " ";
+  // let kunciB = " ";
+  // let kunciC = " ";
+
+  // kataKunciA.forEach((item) => {
+  //   if (KMP(inputString, item) != -1) {
+  //     kunciA = item;
+  //   }
+  // });
+
+  // kataKunciB.forEach((item) => {
+  //   if (KMP(inputString, item) != -1) {
+  //     kunciB = item;
+  //   }
+  // });
+
+
+  // if (kunciA != " ") {
+  //   DB.con.connect((err) => {  
+  //     if (err) throw err;
+  //     let sql = `SELECT * FROM jadwal`;
+  
+  //     DB.con.query(sql, (err, res) => {
+  //       if (!err) {    
+  //         res.forEach((item) => {
+  //           let x = JSON.parse(JSON.stringify(item));
+  //           console.log("ID : "+x.id);
+  //           console.log("ID TUGAS : "+x.id_tugas);
+  //           console.log("TANGGAL : "+x.tanggal);
+  //           console.log("KODE : "+x.kode);
+  //           console.log("NAMA TUGAS : "+x.nama_tugas);
+  //           console.log("DESKRIPSI : "+x.deskripsi);
+  //           console.log("STATUS : "+x.status+"\n");
+  //         });
+  //       }
+  //     });
+  //   });
+  // }
+  // if (kunciB != " ") {
+  //   DB.con.connect((err) => {  
+  //     if (err) throw err;
+  //     let sql = `SELECT * FROM jadwal WHERE tanggal BETWEEN '${date1}' AND '${date2}'`;
+  //     // console.log(date1);
+  //     // console.log(date2);
+  //     DB.con.query(sql, (err, res) => {
+  //       if (!err) {
+  //         res.forEach((item) => {
+  //           let x = JSON.parse(JSON.stringify(item));
+  //           console.log("ID : "+x.id);
+  //           console.log("ID TUGAS : "+x.id_tugas);
+  //           console.log("TANGGAL : "+x.tanggal);
+  //           console.log("KODE : "+x.kode);
+  //           console.log("NAMA TUGAS : "+x.nama_tugas);
+  //           console.log("DESKRIPSI : "+x.deskripsi);
+  //           console.log("STATUS : "+x.status+"\n");
+  //         });
+  //       }
+  //     });
+  //   });
+  // }
 }
 
 function EngineTask3(inputString) {
@@ -390,13 +507,15 @@ function EngineTask5(text){
   }
 }
 
-let testString = 'Hallo bot tolong ingatkan Tucil IF4901 Bab Machine Learning pada 9 August 2025';
+let testString = 'Hallo bot tolong ingatkan Kuis IF1150 AngularJS pada 28 April 2021';
 let testString2 = 'Apa saja deadline yang dimiliki sejauh ini ?';
 let testString3 = 'Kapan deadline tugas IF2210 ?';
 let testString4 = 'Deadline task ID_0423IF2100 diundur menjadi 10 April 2020';
 let testString5 = 'Saya sudah mengerjakan task ID_0809IF4902';
+let testString6 = 'Deadline 2 minggu ke depan apa saja';
+let testString7 = 'Apa saja deadline hari ini ?';
 
-EngineTask2(testString4);
+EngineTask2(testString7);
 
 function help(){
   console.log('Fitur VCS Bot :\n- 1. Menambahkan task baru\n- 2. Melihat daftar task yang harus dikerjakan\n- 3. Menampilkan deadline dari suatu task tertentu\n- 4. Memperbaharui task tertentu\n- 5. Menandai bahwa suatu task sudah selesai dikerjakan\n\nDaftar kata penting yang harus anda muat salah satu didalam chat anda ialah : Kuis, Ujian, Tucil, Tubes, Praktikum\n\n- Periode date 1 sampai date 2, usage : Apa saja deadline antara date1 sampai date2 ?\n- N Minggu kedepan, usage : Deadline N minggu kedepan apa saja ?\n- N Hari kedepan, usage : Deadline N hari kedepan apa saja ?\n- Hari ini, usage : Apa saja deadline hari ini ?\n- Menampilkan deadline tertentu : Deadline tugas tugas123 itu kapan ?\n- Ingin menyesuaikan deadline task, usage : Deadline tugas tugas123 diundur/dimajukan menjadi date123\n- Menyelesaikan tugas, usage : Saya sudah selesai mengerjakan task task123 ( ID Task tersebut )')
