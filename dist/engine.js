@@ -82,8 +82,6 @@ function getAllDate(inputString) {
 
   let result = [];
 
-  // console.log(result);
-
   arrPattern.forEach((item) => {
     result.push(getDate(inputString, item));
   });
@@ -137,7 +135,7 @@ function getIDTask(inputString) {
 function formatDate(date) {
   if (date != false) {
     let nDate = new Date(date);
-    return `${nDate.getDate()}/${nDate.getMonth()+1}/${nDate.getFullYear()}`;
+    return `${nDate.getFullYear()}-${nDate.getMonth()+1}-${nDate.getDate()}`;
   } else {
     return false;
   }
@@ -220,7 +218,7 @@ function EngineTask2(inputString) {
   let id_tugas = getIDTask(inputString);
   let id_date = getAllDate(inputString);
   let timeNow = new Date();
-  let dateNow = `${timeNow.getFullYear()}-${timeNow.getMonth()+1}-${timeNow.getDate()}`;
+  let dateNow = formatDate(timeNow);
 
   let convertDay = getConvert(inputString, ptrRegexDay);
   let convertWeek = getConvert(inputString, ptrRegexWeek);
@@ -273,13 +271,11 @@ function EngineTask2(inputString) {
     });
   }
 
-  // console.log(kataKunci);
-
   if (convertDay != false) {
     convertDay = parseInt(convertDay) * 86400000;
     convertDay = new Date(timeNow.getTime() + convertDay);
 
-    let dateLater = `${convertDay.getFullYear()}-${convertDay.getMonth()+1}-${convertDay.getDate()}`;
+    let dateLater = formatDate(convertDay);
 
     DB.con.connect((err) => {  
       if (err) throw err;
@@ -441,7 +437,7 @@ function EngineTask3(inputString) {
               if (res.length != 0) {
                 let result = JSON.parse(JSON.stringify(res));
                 result.forEach((item) => {
-                  console.log(item.tanggal);
+                  console.log(formatDate(new Date(item.tanggal)));
                 });
               } else {
                 console.log("Task tidak ditemukan");
@@ -533,13 +529,13 @@ function EngineTask5(text){
 
 let testString = 'Hallo bot tolong ingatkan Tucil IF2150 AngularJS pada 9 May 2021';
 let testString2 = 'Apa saja deadline yang dimiliki sejauh ini ?';
-let testString3 = 'Kapan deadline tugas IF2210 ?';
-let testString4 = 'Deadline task ID_0423IF2100 diundur menjadi 10 April 2020';
-let testString5 = 'Saya sudah mengerjakan task ID_0809IF4902';
+let testString3 = 'Kapan deadline tugas IF1150 ?';
+let testString4 = 'Deadline task ID_0502IF1150 diundur menjadi 10 April 2020';
+let testString5 = 'Saya sudah mengerjakan task ID_0502IF1150';
 let testString6 = 'Deadline 2 minggu ke depan apa saja';
 let testString7 = 'Apa saja deadline tucil 20 hari ke depan ?';
 
-EngineTask2(testString7);
+EngineTask3(testString3);
 
 function help(){
   console.log('Fitur VCS Bot :\n- 1. Menambahkan task baru\n- 2. Melihat daftar task yang harus dikerjakan\n- 3. Menampilkan deadline dari suatu task tertentu\n- 4. Memperbaharui task tertentu\n- 5. Menandai bahwa suatu task sudah selesai dikerjakan\n\nDaftar kata penting yang harus anda muat salah satu didalam chat anda ialah : Kuis, Ujian, Tucil, Tubes, Praktikum\n\n- Periode date 1 sampai date 2, usage : Apa saja deadline antara date1 sampai date2 ?\n- N Minggu kedepan, usage : Deadline N minggu kedepan apa saja ?\n- N Hari kedepan, usage : Deadline N hari kedepan apa saja ?\n- Hari ini, usage : Apa saja deadline hari ini ?\n- Menampilkan deadline tertentu : Deadline tugas tugas123 itu kapan ?\n- Ingin menyesuaikan deadline task, usage : Deadline tugas tugas123 diundur/dimajukan menjadi date123\n- Menyelesaikan tugas, usage : Saya sudah selesai mengerjakan task task123 ( ID Task tersebut )')
