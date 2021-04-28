@@ -245,12 +245,17 @@ function EngineTask2(inputString) {
   if (kataKunci != false) {
     DB.con.connect((err) => {  
       if (err) throw err;
-      let sql = `SELECT T.* FROM (
-        SELECT a.*
-        FROM jadwal a
-        WHERE a.tanggal='${dateNow}'
-      ) AS T WHERE T.nama_tugas = '${keywordAsu}';
-      `;
+      let sql = 'asu';
+      if (keyword != ["asu"]){
+        sql = `SELECT T.* FROM (
+          SELECT a.*
+          FROM jadwal a
+          WHERE a.tanggal BETWEEN '${dateNow}' AND '${dateLater}'
+        ) AS T WHERE T.nama_tugas = '${keywordAsu}';
+        `;
+      }else{
+        sql = `SELECT * FROM jadwal WHERE tanggal BETWEEN '${dateNow}' AND '${dateLater}'`;
+      }
       DB.con.query(sql, (err, res) => {
         if (!err) {
           res.forEach((item) => {
@@ -279,12 +284,17 @@ function EngineTask2(inputString) {
 
     DB.con.connect((err) => {  
       if (err) throw err;
-      let sql = `SELECT T.* FROM (
-        SELECT a.*
-        FROM jadwal a
-        WHERE a.tanggal BETWEEN '${dateNow}' AND '${dateLater}'
-      ) AS T WHERE T.nama_tugas = '${keywordAsu}';
-      `;
+      let sql = 'asu';
+      if (keyword != ["asu"]){
+        sql = `SELECT T.* FROM (
+          SELECT a.*
+          FROM jadwal a
+          WHERE a.tanggal BETWEEN '${dateNow}' AND '${dateLater}'
+        ) AS T WHERE T.nama_tugas = '${keywordAsu}';
+        `;
+      }else{
+        sql = `SELECT * FROM jadwal WHERE tanggal BETWEEN '${dateNow}' AND '${dateLater}'`;
+      }
       DB.con.query(sql, (err, res) => {
         if (!err) {
           res.forEach((item) => {
@@ -313,12 +323,17 @@ function EngineTask2(inputString) {
 
     DB.con.connect((err) => {  
       if (err) throw err;
-      let sql = `SELECT T.* FROM (
-        SELECT a.*
-        FROM jadwal a
-        WHERE a.tanggal BETWEEN '${dateNow}' AND '${dateLater}'
-      ) AS T WHERE T.nama_tugas = '${keywordAsu}';
-      `;
+      let sql = 'asu';
+      if (keyword != ["asu"]){
+        sql = `SELECT T.* FROM (
+          SELECT a.*
+          FROM jadwal a
+          WHERE a.tanggal BETWEEN '${dateNow}' AND '${dateLater}'
+        ) AS T WHERE T.nama_tugas = '${keywordAsu}';
+        `;
+      }else{
+        sql = `SELECT * FROM jadwal WHERE tanggal BETWEEN '${dateNow}' AND '${dateLater}'`;
+      }
       DB.con.query(sql, (err, res) => {
         if (!err) {
           res.forEach((item) => {
@@ -535,10 +550,11 @@ let testString5 = 'Saya sudah mengerjakan task ID_0502IF1150';
 let testString6 = 'Deadline 2 minggu ke depan apa saja';
 let testString7 = 'Apa saja deadline tucil 20 hari ke depan ?';
 
-EngineTask3(testString3);
+EngineTask2(testString7);
 
 function help(){
   console.log('Fitur VCS Bot :\n- 1. Menambahkan task baru\n- 2. Melihat daftar task yang harus dikerjakan\n- 3. Menampilkan deadline dari suatu task tertentu\n- 4. Memperbaharui task tertentu\n- 5. Menandai bahwa suatu task sudah selesai dikerjakan\n\nDaftar kata penting yang harus anda muat salah satu didalam chat anda ialah : Kuis, Ujian, Tucil, Tubes, Praktikum\n\n- Periode date 1 sampai date 2, usage : Apa saja deadline antara date1 sampai date2 ?\n- N Minggu kedepan, usage : Deadline N minggu kedepan apa saja ?\n- N Hari kedepan, usage : Deadline N hari kedepan apa saja ?\n- Hari ini, usage : Apa saja deadline hari ini ?\n- Menampilkan deadline tertentu : Deadline tugas tugas123 itu kapan ?\n- Ingin menyesuaikan deadline task, usage : Deadline tugas tugas123 diundur/dimajukan menjadi date123\n- Menyelesaikan tugas, usage : Saya sudah selesai mengerjakan task task123 ( ID Task tersebut )')
 }
 
 //help();
+// kontol kontol kontol()
