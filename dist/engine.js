@@ -205,6 +205,8 @@ function EngineTask2(inputString) {
 
   let date1 = id_date[0][0].getDate()+"/"+(id_date[0][0].getMonth()+1)+"/"+id_date[0][0].getFullYear();
   let date2 = id_date[0][1].getDate()+"/"+(id_date[0][1].getMonth()+1)+"/"+id_date[0][1].getFullYear();
+
+  let tanggalAsu = id.date[0][0].getTime();
   // console.log(date2);
   let date3 = id_date[0][0]+1;
   console.log(date3);
@@ -394,7 +396,7 @@ let testString3 = 'Kapan deadline tugas IF2210 ?';
 let testString4 = 'Deadline task ID_0423IF2100 diundur menjadi 10 April 2020';
 let testString5 = 'Saya sudah mengerjakan task ID_0809IF4902';
 
-EngineTask4(testString4);
+EngineTask2(testString4);
 
 function help(){
   console.log('Fitur VCS Bot :\n- 1. Menambahkan task baru\n- 2. Melihat daftar task yang harus dikerjakan\n- 3. Menampilkan deadline dari suatu task tertentu\n- 4. Memperbaharui task tertentu\n- 5. Menandai bahwa suatu task sudah selesai dikerjakan\n\nDaftar kata penting yang harus anda muat salah satu didalam chat anda ialah : Kuis, Ujian, Tucil, Tubes, Praktikum\n\n- Periode date 1 sampai date 2, usage : Apa saja deadline antara date1 sampai date2 ?\n- N Minggu kedepan, usage : Deadline N minggu kedepan apa saja ?\n- N Hari kedepan, usage : Deadline N hari kedepan apa saja ?\n- Hari ini, usage : Apa saja deadline hari ini ?\n- Menampilkan deadline tertentu : Deadline tugas tugas123 itu kapan ?\n- Ingin menyesuaikan deadline task, usage : Deadline tugas tugas123 diundur/dimajukan menjadi date123\n- Menyelesaikan tugas, usage : Saya sudah selesai mengerjakan task task123 ( ID Task tersebut )')
