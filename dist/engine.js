@@ -246,7 +246,9 @@ function EngineTask2(inputString) {
     DB.con.connect((err) => {  
       if (err) throw err;
       let sql = 'asu';
-      if (keyword != ["asu"]){
+      // console.log(keywordAsu);
+      // console.log(keywordAsu==['asu']);
+      if (keywordAsu != "asu"){
         sql = `SELECT T.* FROM (
           SELECT a.*
           FROM jadwal a
@@ -285,7 +287,8 @@ function EngineTask2(inputString) {
     DB.con.connect((err) => {  
       if (err) throw err;
       let sql = 'asu';
-      if (keyword != ["asu"]){
+      // console.log(keywordAsu==['asu']);
+      if (keywordAsu != "asu"){
         sql = `SELECT T.* FROM (
           SELECT a.*
           FROM jadwal a
@@ -324,7 +327,9 @@ function EngineTask2(inputString) {
     DB.con.connect((err) => {  
       if (err) throw err;
       let sql = 'asu';
-      if (keyword != ["asu"]){
+      // console.log(keywordAsu);
+      // console.log(keywordAsu==['asu']);
+      if (keywordAsu != "asu"){
         sql = `SELECT T.* FROM (
           SELECT a.*
           FROM jadwal a
@@ -548,7 +553,7 @@ let testString3 = 'Kapan deadline tugas IF1150 ?';
 let testString4 = 'Deadline task ID_0502IF1150 diundur menjadi 10 April 2020';
 let testString5 = 'Saya sudah mengerjakan task ID_0502IF1150';
 let testString6 = 'Deadline 2 minggu ke depan apa saja';
-let testString7 = 'Apa saja deadline tucil 20 hari ke depan ?';
+let testString7 = 'Apa saja deadline tubes 20 hari ke depan ?';
 
 EngineTask2(testString7);
 
