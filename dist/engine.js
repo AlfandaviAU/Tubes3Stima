@@ -242,9 +242,11 @@ function EngineTask2(inputString) {
       keywordAsu = item;
     }
   });
+
   if (kataKunci != false) {
     DB.con.connect((err) => {  
       if (err) throw err;
+
       let sql = 'asu';
       // console.log(keywordAsu);
       // console.log(keywordAsu==['asu']);
@@ -252,11 +254,11 @@ function EngineTask2(inputString) {
         sql = `SELECT T.* FROM (
           SELECT a.*
           FROM jadwal a
-          WHERE a.tanggal BETWEEN '${dateNow}' AND '${dateLater}'
+          WHERE a.tanggal ='${dateNow}'
         ) AS T WHERE T.nama_tugas = '${keywordAsu}';
         `;
       }else{
-        sql = `SELECT * FROM jadwal WHERE tanggal BETWEEN '${dateNow}' AND '${dateLater}'`;
+        sql = `SELECT * FROM jadwal WHERE tanggal ='${dateNow}'`;
       }
       DB.con.query(sql, (err, res) => {
         if (!err) {
@@ -547,19 +549,20 @@ function EngineTask5(text){
   }
 }
 
-let testString = 'Hallo bot tolong ingatkan Tucil IF2150 AngularJS pada 9 May 2021';
+let testString = 'Hallo bot tolong ingatkan Tucil IF1150 AngularJS pada 28 April 2021';
 let testString2 = 'Apa saja deadline yang dimiliki sejauh ini ?';
 let testString3 = 'Kapan deadline tugas IF1150 ?';
-let testString4 = 'Deadline task ID_0502IF1150 diundur menjadi 10 April 2020';
-let testString5 = 'Saya sudah mengerjakan task ID_0502IF1150';
+let testString4 = 'Deadline task ID_0501IF2150 diundur menjadi 10 April 2020';
+let testString5 = 'Saya sudah mengerjakan task ID_0428IF1150';
 let testString6 = 'Deadline 2 minggu ke depan apa saja';
 let testString7 = 'Apa saja deadline tubes 20 hari ke depan ?';
-
-EngineTask2(testString7);
+let testString8 = 'Apa saja deadline antara 1 May 2021 sampai 3 May 2021';
+let testString9 = 'Apa saja deadline hari ini ?';
+// EngineTask5(testString5);
 
 function help(){
   console.log('Fitur VCS Bot :\n- 1. Menambahkan task baru\n- 2. Melihat daftar task yang harus dikerjakan\n- 3. Menampilkan deadline dari suatu task tertentu\n- 4. Memperbaharui task tertentu\n- 5. Menandai bahwa suatu task sudah selesai dikerjakan\n\nDaftar kata penting yang harus anda muat salah satu didalam chat anda ialah : Kuis, Ujian, Tucil, Tubes, Praktikum\n\n- Periode date 1 sampai date 2, usage : Apa saja deadline antara date1 sampai date2 ?\n- N Minggu kedepan, usage : Deadline N minggu kedepan apa saja ?\n- N Hari kedepan, usage : Deadline N hari kedepan apa saja ?\n- Hari ini, usage : Apa saja deadline hari ini ?\n- Menampilkan deadline tertentu : Deadline tugas tugas123 itu kapan ?\n- Ingin menyesuaikan deadline task, usage : Deadline tugas tugas123 diundur/dimajukan menjadi date123\n- Menyelesaikan tugas, usage : Saya sudah selesai mengerjakan task task123 ( ID Task tersebut )')
 }
 
-//help();
+help();
 // kontol kontol kontol()
