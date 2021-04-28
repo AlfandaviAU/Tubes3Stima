@@ -1,7 +1,7 @@
 let mysql = require('mysql');
 const DB = require('./database.js');
 
-// DB.createDatabase();
+//DB.createDatabase();
 // DB.createTable();
 
 function buildPatternTable(pattern) {
@@ -58,7 +58,7 @@ function getDate(inputString, ptrRegexDate) {
 
   result = Array.from(result);
 
-  console.log(result);
+  // console.log(result);
 
   if (result.length > 0) {
     if (result.length > 1) {
@@ -181,6 +181,91 @@ function formatDate(date) {
   return `${nDate.getDate()}/${nDate.getMonth()+1}/${nDate.getFullYear()}`;
 }
 
+function DateToInt(date){
+  let nDate = new Date(date);
+  return(nDate.getMilliseconds());
+}
+function EngineTask2(inputString){
+  // a. Seluruh task yang sudah tercatat oleh assistant
+  // Contoh perintah yang dapat digunakan: “Apa saja deadline yang dimiliki
+  // sejauh ini?”
+
+  let kataKunciA = ['milik'];
+  let kataKunciB = ['antara'];
+  let kataKunciC = ['minggu ke depan'];
+  let id_tugas = getIDTask(inputString);
+  let id_date = getAllDate(inputString);
+
+  let date1 = id_date[0][0].getDate()+"/"+(id_date[0][0].getMonth()+1)+"/"+id_date[0][0].getFullYear();
+  let date2 = id_date[0][1].getDate()+"/"+(id_date[0][1].getMonth()+1)+"/"+id_date[0][1].getFullYear();
+  // console.log(date2);
+  let date3 = id_date[0][0]+1;
+  console.log(date3);
+  console.log("asu");
+  console.log(id_date[0][0].getMilliseconds());
+  let kunciA = " ";
+  let kunciB = " ";
+  let kunciC = " ";
+
+  kataKunciA.forEach((item) => {
+    if (KMP(inputString, item) != -1) {
+      kunciA = item;
+    }
+  });
+
+  kataKunciB.forEach((item) => {
+    if (KMP(inputString, item) != -1) {
+      kunciB = item;
+    }
+  });
+
+
+  if (kunciA != " ") {
+    DB.con.connect((err) => {  
+      if (err) throw err;
+      let sql = `SELECT * FROM jadwal`;
+  
+      DB.con.query(sql, (err, res) => {
+        if (!err) {    
+          res.forEach((item) => {
+            let x = JSON.parse(JSON.stringify(item));
+            console.log("ID : "+x.id);
+            console.log("ID TUGAS : "+x.id_tugas);
+            console.log("TANGGAL : "+x.tanggal);
+            console.log("KODE : "+x.kode);
+            console.log("NAMA TUGAS : "+x.nama_tugas);
+            console.log("DESKRIPSI : "+x.deskripsi);
+            console.log("STATUS : "+x.status+"\n");
+          });
+        }
+      });
+    });
+  }
+  if (kunciB != " ") {
+    DB.con.connect((err) => {  
+      if (err) throw err;
+      let sql = `SELECT * FROM jadwal WHERE tanggal BETWEEN '${date1}' AND '${date2}'`;
+      // console.log(date1);
+      // console.log(date2);
+      DB.con.query(sql, (err, res) => {
+        if (!err) {
+          res.forEach((item) => {
+            let x = JSON.parse(JSON.stringify(item));
+            console.log("ID : "+x.id);
+            console.log("ID TUGAS : "+x.id_tugas);
+            console.log("TANGGAL : "+x.tanggal);
+            console.log("KODE : "+x.kode);
+            console.log("NAMA TUGAS : "+x.nama_tugas);
+            console.log("DESKRIPSI : "+x.deskripsi);
+            console.log("STATUS : "+x.status+"\n");
+          });
+        }
+      });
+    });
+  }
+
+}
+
 function EngineTask4(inputString) {
   let arrDate = getAllDate(inputString);
   let description = 'String Matching';
@@ -210,14 +295,17 @@ function EngineTask4(inputString) {
   });
 }
 
-let testString = 'Hallo bot tolong ingatkan Kuis IF2210 Bab 2 Sampai 3 pada 14 May 2022';
+let testString = 'Hallo bot tolong ingatkan Kuis IF2211 Bab 2 Sampai 3 pada 26 Juni 2022';
 let testString2 = 'Deadline task ID_1202IF2210 diundur menjadi 05 Maret 2020';
 let testString3 = 'Kapan deadline tugas IF2210 ?';
-
+let testString4 = 'milik saya';
+let testString5 = 'Apa saja deadline antara 14 may 2022 sampai 25 juni 2022';
 // getAllDate(testString2);
-EngineTask1(testString);
+// EngineTask1(testString);
+EngineTask2(testString5);
 // EngineTask4(testString2);
 // EngineTask3(testString3);
+// EngineTask2(testString5);
 
 function EngineTask3(inputString) {
   let kataKunci = ['Kapan', 'Bila', 'Waktu', 'Ketika'];
@@ -242,8 +330,12 @@ function EngineTask3(inputString) {
           if (!err) {    
             if (res.length != 0) {
               let x = JSON.parse(JSON.stringify(res));
-              console.log(x[0].tanggal);
-              console.log(x[1].tanggal);
+              // console.log(x.length);
+              var len = x.length;
+              var i;
+              for (i = 0;i < len; i++){
+                console.log(x[i].tanggal);
+              }
             } else {
               console.log("Task tidak ditemukan");
             }
